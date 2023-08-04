@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, abort
-from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
@@ -16,7 +15,6 @@ from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
-Bootstrap(app)
 
 # Use Heroku Config Var for Database URL
 # if 'DATABASE_URL' in os.environ:
