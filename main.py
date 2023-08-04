@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request, redirect, url_for, abort
+from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
@@ -11,25 +12,59 @@ from flask_login import LoginManager, UserMixin, login_user, current_user, logou
 from functools import wraps
 import os
 from flask_migrate import Migrate
+from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+Bootstrap(app)
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 # Use Heroku Config Var for Database URL
-if 'DATABASE_URL' in os.environ:
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# if 'DATABASE_URL' in os.environ:
+#     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# else:
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# CONNECT TO DB
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
 
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+# User Model
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='user')  # 'user' or 'admin'
+
+    # This will act like a List of BlogPost objects attached to each User.
+    # The "author" refers to the author property in the BlogPost class.
+    cafes = relationship("Cafe", back_populates="author")
+
 
 # Café TABLE Configuration
 class Cafe(db.Model):
+    __tablename__ = 'cafe'
     id = db.Column(db.Integer, primary_key=True)
+
+    # Create Foreign Key, "users.id" the users refers to the tablename of User.
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # Create reference to the User object, the "cafes" refers to the cafes property in the User class.
+    author = relationship("User", back_populates="cafes")
+
     name = db.Column(db.String(250), unique=True, nullable=False)
     map_url = db.Column(db.String(500), nullable=False)
     img_url = db.Column(db.String(500), nullable=False)
@@ -54,24 +89,6 @@ class Cafe(db.Model):
 
         # Method 2. Alternatively, use Dictionary Comprehension to do the same thing.
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-
-
-# Initialize Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-
-
-# User Model
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default='user')  # 'user' or 'admin'
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 
 # Define the Registration Form
@@ -266,12 +283,15 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or current_user.role != 'admin':
             # Redirect non-authenticated users to the login page
-            return redirect(url_for('login', next=request.url))
+            #return redirect(url_for('login', next=request.url))
+            return abort(403)
         return f(*args, **kwargs)
     return decorated_function
 
 
 @app.route('/add', methods=['GET', 'POST'])
+# Mark with decorator
+@admin_required
 def add_new_cafe():
     form = AddCafeForm()
     if form.validate_on_submit():
@@ -305,6 +325,8 @@ def choose_cafe():
 
 
 @app.route('/update-price/<int:cafe_id>', methods=['GET', 'POST', 'PATCH'])
+# Mark with decorator
+@admin_required
 def update_cafe_price(cafe_id):
     cafe = Cafe.query.get(cafe_id)
     form = UpdateCafePriceForm()
@@ -325,6 +347,8 @@ def update_cafe_price(cafe_id):
 
 
 @app.route('/delete-cafe', methods=['GET', 'POST'])
+# Mark with decorator
+@admin_required
 def delete_cafe():
     form = DeleteCafeForm()
     if request.method == 'POST' and form.validate_on_submit():
