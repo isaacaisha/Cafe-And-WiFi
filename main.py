@@ -270,21 +270,34 @@ def logout():
     return redirect(url_for('home'))
 
 
-def is_admin():
-    """Check if the current user is an admin."""
-    if current_user.is_authenticated and current_user.role == 'admin':
-        return True
-    return False
+#def is_admin():
+#    """Check if the current user is an admin."""
+#    if current_user.is_authenticated and current_user.role == 'admin':
+#        return True
+#    return False
+#
+#
+#def admin_required(f):
+#    """Decorator to restrict access to admin-only routes."""
+#    @wraps(f)
+#    def decorated_function(*args, **kwargs):
+#        if not current_user.is_authenticated or current_user.role != 'admin':
+#            # Redirect non-authenticated users to the login page
+#            #return redirect(url_for('login', next=request.url))
+#            return abort(403)
+#        return f(*args, **kwargs)
+#    return decorated_function
+#
 
 
+# Create admin-only decorator
 def admin_required(f):
-    """Decorator to restrict access to admin-only routes."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role != 'admin':
-            # Redirect non-authenticated users to the login page
-            #return redirect(url_for('login', next=request.url))
+        # If id is not 1 or 2, then return abort with 403 error
+        if current_user.id != 1 and current_user.id != 2:
             return abort(403)
+        # Otherwise continue with the route function
         return f(*args, **kwargs)
     return decorated_function
 
