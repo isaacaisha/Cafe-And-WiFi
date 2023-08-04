@@ -15,9 +15,10 @@ app = Flask(__name__)
 
 # Connect to Database
 # Use Heroku Config Var for Database URL
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 
