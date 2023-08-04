@@ -9,11 +9,13 @@ import json
 from pprint import pprint
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
 from functools import wraps
+import os
 
 app = Flask(__name__)
 
 # Connect to Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+# Use Heroku Config Var for Database URL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'your_secret_key_here'
 db = SQLAlchemy(app)
