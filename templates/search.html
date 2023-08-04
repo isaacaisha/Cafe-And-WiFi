@@ -1,0 +1,38 @@
+{% include 'header.html' %}
+
+    <div class="container mt-5">
+        <h3 class="mb-4">Search Cafés by Location</h3>
+        <form method="POST" action="/search">
+        {{ form.csrf_token }} {# Add the CSRF token here #}
+
+            <div class="form-group">
+                <label for="location">Enter Location:</label>
+                <input type="text" class="form-control" id="location" name="loc" required>
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <!-- Display search results here -->
+        <div class="mt-4 text-center">
+            <!-- Use JavaScript to populate this section with search results -->
+            {% for cafe in cafes_by_location %}
+                <div class="container-margin">
+                    <h5>{{ cafe.name }}</h5>
+                    <img src="{{cafe.img_url}}" class="img-thumbnail detail-img rounded mx-auto d-block"  alt="Cafe Image">
+                    <p>Cafe id: {{ cafe.id }}</p>
+                    <p>Location: {{ cafe.location }}</p>
+                    <p>Cafe map url: <a href="{{ cafe.map_url }}" target="_blank">{{ cafe.map_url }}</a></p>
+                    <p>Cafe seats: {{ cafe.seats }}</p>
+                    <p>Café has toilet: {{ cafe.has_toilet }}</p>
+                    <p>Café has wi-fi: {{ cafe.has_wifi }}</p>
+                    <p>Cafe has sockets: {{ cafe.has_sockets }}</p>
+                    <p>Café can take calls: {{ cafe.can_take_calls }}</p>
+                    <p>Café coffee price: {{ cafe.coffee_price }}</p>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% include 'footer.html' %}
