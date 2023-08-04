@@ -10,16 +10,20 @@ from pprint import pprint
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
 from functools import wraps
 import os
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 
-# Connect to Database
-# Use Heroku Config Var for Database URL
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
+# Use Heroku Config Var for Database URL
+if 'DATABASE_URL' in os.environ:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
 
 
