@@ -18,7 +18,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
@@ -52,10 +52,11 @@ class Cafe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Create Foreign Key, "users.id" the users refers to the tablename of User.
-    name = db.Column(db.String(250), db.ForeignKey("user.id"), unique=True, nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     # Create reference to the User object, the "cafés" refers to the cafés property in the User class.
     author = relationship("User", back_populates="cafes")
 
+    name = db.Column(db.String(250), unique=True, nullable=False)
     map_url = db.Column(db.String(500), nullable=False)
     img_url = db.Column(db.String(500), nullable=False)
     location = db.Column(db.String(250), nullable=False)
