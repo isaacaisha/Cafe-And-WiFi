@@ -10,7 +10,7 @@ from pprint import pprint
 from flask_login import LoginManager, UserMixin, login_user, current_user, logout_user
 from functools import wraps
 import os
-#from flask_migrate import Migrate
+from flask_migrate import Migrate
 from sqlalchemy.orm import relationship
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-#migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 csrf = CSRFProtect(app)
 
 # Initialize Flask-Login
