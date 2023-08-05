@@ -53,7 +53,7 @@ class Cafe(db.Model):
 
     # Create Foreign Key, "users.id" the users refers to the tablename of User.
     name = db.Column(db.String(250), db.ForeignKey("user.id"), unique=True, nullable=False)
-    # Create reference to the User object, the "cafes" refers to the cafes property in the User class.
+    # Create reference to the User object, the "cafés" refers to the cafés property in the User class.
     author = relationship("User", back_populates="cafes")
 
     map_url = db.Column(db.String(500), nullable=False)
@@ -258,26 +258,6 @@ def logout():
     logout_user()
     print('Allah Bless You ¡!¡')
     return redirect(url_for('home'))
-
-
-#def is_admin():
-#    """Check if the current user is an admin."""
-#    if current_user.is_authenticated and current_user.role == 'admin':
-#        return True
-#    return False
-#
-#
-#def admin_required(f):
-#    """Decorator to restrict access to admin-only routes."""
-#    @wraps(f)
-#    def decorated_function(*args, **kwargs):
-#        if not current_user.is_authenticated or current_user.role != 'admin':
-#            # Redirect non-authenticated users to the login page
-#            #return redirect(url_for('login', next=request.url))
-#            return abort(403)
-#        return f(*args, **kwargs)
-#    return decorated_function
-#
 
 
 # Create admin-only decorator
