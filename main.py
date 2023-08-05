@@ -1,9 +1,7 @@
-import psycopg2
 from flask import Flask, jsonify, render_template, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
-from psycopg2 import extras
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, PasswordField
 from wtforms.validators import DataRequired
 import random
@@ -80,35 +78,6 @@ class Cafe(db.Model):
 
         # Method 2. Alternatively, use Dictionary Comprehension to do the same thing.
         return {column.name: getattr(self, column.name) for column in self.__table__.columns}
-
-
-db_url = ("postgres://zxjonziagetvcy:6147e9791feccb9f2209e07291459e6fcf66e6feac7a2a6b687279d6b7448c22@ec2-3-92-151-217"
-          ".compute-1.amazonaws.com:5432/d3ru7ef8pkdf0u")
-
-try:
-    # Establish a connection to the database
-    conn = psycopg2.connect(db_url)
-
-    # Create a cursor
-    cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
-
-    # Execute a sample query on the "cafes" table
-    query = "SELECT * FROM cafe"
-    cursor.execute(query)
-
-    # Fetch and print the query results
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
-
-except (Exception, psycopg2.Error) as error:
-    print("Error while connecting to PostgreSQL:", error)
-finally:
-    # Close the cursor and connection
-    if cursor:
-        cursor.close()
-    if conn:
-        conn.close()
 
 
 # Define the Registration Form
