@@ -16,13 +16,6 @@ from sqlalchemy.orm import relationship
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 
-# Use Heroku Config Var for Database URL
-# if 'DATABASE_URL' in os.environ:
-#     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-# else:
-#     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -59,11 +52,10 @@ class Cafe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     # Create Foreign Key, "users.id" the users refers to the tablename of User.
-    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    name = db.Column(db.String(250), db.ForeignKey("user.id"), unique=True, nullable=False)
     # Create reference to the User object, the "cafes" refers to the cafes property in the User class.
     author = relationship("User", back_populates="cafes")
 
-    name = db.Column(db.String(250), unique=True, nullable=False)
     map_url = db.Column(db.String(500), nullable=False)
     img_url = db.Column(db.String(500), nullable=False)
     location = db.Column(db.String(250), nullable=False)
