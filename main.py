@@ -13,12 +13,17 @@ from pprint import pprint
 import os
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
+import redis
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+
+app.config['SECRET_KEY'] = 'SECRET_KEY'
+# Set the WTF_CSRF_SECRET_KEY
+app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('JAWSDB_MARIA_URL', 'sqlite:///cafes.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
@@ -26,6 +31,12 @@ csrf = CSRFProtect(app)
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'  # Set the login view
+
+# Initialize a Redis client if REDIS_URL is provided
+redis_url = os.environ.get('REDIS_URL')
+if redis_url:
+    redis_client = redis.from_url(redis_url)
 
 
 @login_manager.user_loader
