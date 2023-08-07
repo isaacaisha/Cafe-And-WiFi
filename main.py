@@ -38,6 +38,13 @@ redis_url = os.environ.get('REDIS_URL')
 if redis_url:
     redis_client = redis.from_url(redis_url)
 
+    # Assuming you have stored a key-value pair in Redis
+    key = 'my_key'
+    value = redis_client.get(key)
+
+    # Print the value
+    print(value)
+
 
 @login_manager.user_loader
 def load_user(user_id):
