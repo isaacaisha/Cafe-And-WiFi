@@ -4,6 +4,11 @@
         <h3 class="mb-4">Search Cafés by Location</h3>
         <form method="POST" action="/search">
         {{ form.csrf_token }} {# Add the CSRF token here #}
+        {% if error_message %}  {# Update the variable name here #}
+        <div class="alert alert-info">
+          {{ error_message }}  {# Update the variable name here #}
+        </div>
+        {% endif %}
 
             <div class="form-group">
                 <label for="location">Enter Location:</label>

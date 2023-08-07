@@ -1,6 +1,11 @@
 {% include 'header.html' %}
 
     <div class="container img">
+        {% if error_message %} {# Update the variable name here #}
+        <div class="alert alert-info">
+          {{ error_message }}  {# Update the variable name here #}
+        </div>
+        {% endif %}
         <div class="row">
           {% for cafe in cafes %}
             <div class="col-md-4 d-flex flex-column align-items-center container-margin">

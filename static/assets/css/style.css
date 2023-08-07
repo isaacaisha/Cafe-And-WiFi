@@ -2,7 +2,6 @@ h1, h3 {
     color: #894218;
     margin-top: 1rem;
     text-align: center;
-    text-decoration: underline;
     font-family: 'Cardo'
 }
 
@@ -13,6 +12,7 @@ h5, h6, .location {
 
 .navbar-brand {
     color: #A24D1B;
+    margin-left: 1rem;
 }
 
 a.nav-link {
@@ -73,4 +73,14 @@ h5.error-api-key {
   width: 505px; /* Adjust the width as needed */
   height: 397px; /* Adjust the height as needed */
   object-fit: cover; /* This property ensures the image scales while preserving its aspect ratio */
+}
+
+.fa-inverse {
+    background-color: greenyellow;
+    border-radius: 91%;
+    color: purple;
+}
+
+.copyright {
+    color: #1E1DDA;
 }

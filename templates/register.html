@@ -4,6 +4,16 @@
     <h3 class="mb-4">Register ¡!¡</h3>
     <form action="{{ url_for('register') }}" method="post">
         {{ form.csrf_token }} {# Add the CSRF token here #}
+        {% if error_message %}  {# Update the variable name here #}
+        <div class="alert alert-info">
+          {{ error_message }}  {# Update the variable name here #}
+        </div>
+        {% endif %}
+        {% if register_message %}  {# Update the variable name here #}
+        <div class="alert alert-success">
+          {{ register_message }}  {# Update the variable name here #}
+        </div>
+        {% endif %}
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" class="form-control" id="username" name="username" required>

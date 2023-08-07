@@ -5,6 +5,11 @@
 
     <form class="form-add" action="{{ url_for('add_new_cafe') }}" method="post">
         {{ form.csrf_token }} {# Add the CSRF token here #}
+        {% if error_message %}  {# Update the variable name here #}
+        <div class="alert alert-danger">
+          {{ error_message }}  {# Update the variable name here #}
+        </div>
+        {% endif %}
 
         <div class="form-group">
             <label for="name">Name:</label>
@@ -55,11 +60,6 @@
             <label for="coffee_price">Coffee Price:</label>
             <input type="text" class="form-control" id="coffee_price" name="coffee_price">
         </div>
-
-        <!--<div class="form-group">
-            <label for="api_key">Enter API Key:</label>
-            <input type="text" class="form-control" id="api_key" name="api_key" required>
-        </div>-->
 
         <div class="d-grid gap-2 col-12 mx-auto">
             <button type="submit" class="btn btn-primary">Submit</button>

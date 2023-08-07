@@ -1,17 +1,17 @@
 {% include 'header.html' %}
 
 <div class="container mt-5">
-    <h3 class="mb-4">Delete Cafe by ID</h3>
-    <form action="{{ url_for('delete_cafe') }}" method="post">
+    <h3 class="mb-4">Delete User by ID</h3>
+    <form action="{{ url_for('delete_user') }}" method="post">
         {{ form.csrf_token }} {# Add the CSRF token here #}
         {% if error_message %}  {# Update the variable name here #}
         <div class="alert alert-danger">
           {{ error_message }}  {# Update the variable name here #}
         </div>
         {% endif %}
-        {% if delete_message %} {# Update the variable name here #}
+        {% if success_message %} {# Update the variable name here #}
         <div class="alert alert-success">
-          {{ delete_message }} {# Update the variable name here #}
+          {{ success_message }} {# Update the variable name here #}
         </div>
         {% endif %}
         <div class="form-group">
@@ -19,7 +19,7 @@
             <input type="text" class="form-control" id="id" name="id" required>
         </div>
         <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-warning">Delete Cafe</button>
+            <button type="submit" class="btn btn-warning">Delete User</button>
         </div>
     </form>
 </div>
