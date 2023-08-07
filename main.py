@@ -18,7 +18,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')  # add to use SQlite: (, 'sqlite:///cafes.db')
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')  # add to use SQlite: (, 'sqlite:///cafes.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = ('postgres://stogczxnxtrkgt'
+                                         ':8b8a4b1e82fe440dec039bec0a2cfa2268707c15748ab1759c56217170d80afb@ec2-44'
+                                         '-213-228-107.compute-1.amazonaws.com:5432/da7fjtkq6m445h')  # add to use
+# SQlite: (, 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
