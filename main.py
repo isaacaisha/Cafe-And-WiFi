@@ -14,7 +14,6 @@ import os
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
 import redis
-import logging
 
 
 app = Flask(__name__)
@@ -45,15 +44,6 @@ if redis_url:
 
     # Print the value
     print(value)
-
-
-app.logger.setLevel(logging.DEBUG)  # Set the desired log level
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler('app.log')
-file_handler.setFormatter(formatter)
-app.logger.addHandler(file_handler)
-
-app.logger.debug('This is a debug message')
 
 
 @login_manager.user_loader
