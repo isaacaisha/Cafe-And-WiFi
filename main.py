@@ -18,12 +18,12 @@ import logging
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'SECRET_KEY'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 # Set the WTF_CSRF_SECRET_KEY
 app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
