@@ -16,7 +16,8 @@ from forms import (RegistrationForm, LoginForm, SearchCafeForm,
 from flask_migrate import Migrate
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+#app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
 
 
