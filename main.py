@@ -113,16 +113,16 @@ def favicon():
 @app.route('/')
 def home():
     pprint('Siisi Chacal ¡!¡')
-    #if cafes:
+    if cafes:
         # print(json.dumps({"All cafés": cafes_data}, indent=4))  # Print the JSON result
         # return jsonify(a_random_cafe=random_cafe_, cafes=cafes_data)
-    return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
-    #else:
-    #    # Set the error message for unsuccessful search
-    #    error_message = 'Sorry No Cafes found 😭 ¡!¡'
-    #    print(error_message)
-    #    return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
-    #    # return jsonify({'message': 'No cafes found.'})
+        return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
+    else:
+        # Set the error message for unsuccessful search
+        error_message = 'Sorry No Cafes found 😭 ¡!¡'
+        print(error_message)
+        return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
+        # return jsonify({'message': 'No cafes found.'})
 
 
 @app.route('/cafe/<int:cafe_id>')
