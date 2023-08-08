@@ -13,9 +13,12 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
+
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
@@ -85,6 +88,8 @@ class Cafe(db.Model):
 with app.app_context():
     # Create all database tables
     db.create_all()
+
+    migrate = Migrate(app, db)
 
     # Retrieve all cafés from the database
     cafes = Cafe.query.all()
