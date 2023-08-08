@@ -83,9 +83,6 @@ class Cafe(db.Model):
 
 
 with app.app_context():
-    # Drop the "users" table if it exists
-    db.drop_all()
-
     # Create all database tables
     db.create_all()
 
