@@ -91,7 +91,7 @@ class Cafe(db.Model):
 
 with app.app_context():
     # Create all database tables
-    #db.create_all()
+    db.create_all()
 
     migrate = Migrate(app, db)
 
