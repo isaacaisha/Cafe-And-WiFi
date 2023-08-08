@@ -97,7 +97,7 @@ with app.app_context():
 
     # Get a random café from our cafe.db
     # Simply convert the random_cafe data record to a dictionary of key-value pairs.
-    random_cafe = random.choice(cafes).to_dict()
+    #random_cafe = random.choice(cafes).to_dict()
 
     time_sec = time.localtime()
     current_year = time_sec.tm_year
