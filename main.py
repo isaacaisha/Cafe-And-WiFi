@@ -23,7 +23,7 @@ app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = ('postgres://zszayjwntszzix'
                                          ':3160385dacb549f3276c870e966143e209c569f4e7e999bc432c84cf6a53eb60@ec2-34'
-                                         '-202-127-5.compute-1.amazonaws.com:5432/d1b3frs5ggdt4l')
+                                         '-202-127-5.compute-1.amazonaws.com:5432/d1b3frs5ggdt4l', 'sqlite:///cafes.db')
 
 #os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
