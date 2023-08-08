@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from flask_wtf.csrf import CSRFProtect
@@ -11,16 +10,12 @@ import time
 from datetime import datetime
 from pprint import pprint
 import os
+from flask_sqlalchemy import SQLAlchemy
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
-import redis
-import logging
 
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
-# Set the WTF_CSRF_SECRET_KEY
-app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
 
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
@@ -31,22 +26,6 @@ csrf = CSRFProtect(app)
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # Set the login view
-
-# Initialize a Redis client if REDIS_URL is provided
-redis_url = os.environ.get('REDIS_URL')
-if redis_url:
-    redis_client = redis.from_url(redis_url)
-else:
-    redis_client = None
-
-app.logger.setLevel(logging.DEBUG)  # Set the desired log level
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler('app.log')
-file_handler.setFormatter(formatter)
-app.logger.addHandler(file_handler)
-
-app.logger.debug('This is a debug message')
 
 
 @login_manager.user_loader
@@ -132,32 +111,17 @@ def favicon():
 
 @app.route('/')
 def home():
-    if redis_client:
-        pprint('Siisi Chacal ¡!¡')
-        # Attempt to retrieve cached data from Redis
-        cached_cafes = redis_client.get('cached_cafes')
-        if cached_cafes:
-            # Convert the cached data back to a Python list
-            cafes_data = json.loads(cached_cafes)
-            return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
-
-    # If Redis is not available or data is not cached, fetch data from the database
-    cafes = Cafe.query.all()
-    cafes_data = [cafe.to_dict() for cafe in cafes]
-
-    if redis_client:
-        # Cache the data in Redis for future requests
-        redis_client.set('cached_cafes', json.dumps(cafes_data), ex=3600)  # Cache for 1 hour
-
+    pprint('Siisi Chacal ¡!¡')
+    if cafes:
         # print(json.dumps({"All cafés": cafes_data}, indent=4))  # Print the JSON result
         # return jsonify(a_random_cafe=random_cafe_, cafes=cafes_data)
-    return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
-    # else:
-    #    # Set the error message for unsuccessful search
-    #    error_message = 'Sorry No Cafes found 😭 ¡!¡'
-    #    print(error_message)
-    #    return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
-    #    # return jsonify({'message': 'No cafes found.'})
+        return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
+    else:
+        # Set the error message for unsuccessful search
+        error_message = 'Sorry No Cafes found 😭 ¡!¡'
+        print(error_message)
+        return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
+        # return jsonify({'message': 'No cafes found.'})
 
 
 @app.route('/cafe/<int:cafe_id>')
@@ -272,7 +236,6 @@ def login():
     # If it's a GET request or the login is not successful, render the login page with the error message
     return render_template('login.html', form=form, error_message=error_message,
                            date=current_time, year=current_year)
-
 
 @app.route('/logout')
 def logout():
