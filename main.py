@@ -16,7 +16,6 @@ from forms import (RegistrationForm, LoginForm, SearchCafeForm,
 import redis
 import logging
 
-
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SECRET_KEY'
@@ -38,14 +37,8 @@ login_manager.login_view = 'login'  # Set the login view
 redis_url = os.environ.get('REDIS_URL')
 if redis_url:
     redis_client = redis.from_url(redis_url)
-
-    # Assuming you have stored a key-value pair in Redis
-    key = 'my_key'
-    value = redis_client.get(key)
-
-    # Print the value
-    print(value)
-
+else:
+    redis_client = None
 
 app.logger.setLevel(logging.DEBUG)  # Set the desired log level
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
@@ -139,17 +132,32 @@ def favicon():
 
 @app.route('/')
 def home():
-    pprint('Siisi Chacal ¡!¡')
-    if cafes:
+    if redis_client:
+        pprint('Siisi Chacal ¡!¡')
+        # Attempt to retrieve cached data from Redis
+        cached_cafes = redis_client.get('cached_cafes')
+        if cached_cafes:
+            # Convert the cached data back to a Python list
+            cafes_data = json.loads(cached_cafes)
+            return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
+
+    # If Redis is not available or data is not cached, fetch data from the database
+    cafes = Cafe.query.all()
+    cafes_data = [cafe.to_dict() for cafe in cafes]
+
+    if redis_client:
+        # Cache the data in Redis for future requests
+        redis_client.set('cached_cafes', json.dumps(cafes_data), ex=3600)  # Cache for 1 hour
+
         # print(json.dumps({"All cafés": cafes_data}, indent=4))  # Print the JSON result
         # return jsonify(a_random_cafe=random_cafe_, cafes=cafes_data)
-        return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
-    else:
-        # Set the error message for unsuccessful search
-        error_message = 'Sorry No Cafes found 😭 ¡!¡'
-        print(error_message)
-        return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
-        # return jsonify({'message': 'No cafes found.'})
+    return render_template('index.html', cafes=cafes_data, date=current_time, year=current_year)
+    # else:
+    #    # Set the error message for unsuccessful search
+    #    error_message = 'Sorry No Cafes found 😭 ¡!¡'
+    #    print(error_message)
+    #    return render_template('index.html', error_message=error_message, date=current_time, year=current_year)
+    #    # return jsonify({'message': 'No cafes found.'})
 
 
 @app.route('/cafe/<int:cafe_id>')
@@ -243,15 +251,23 @@ def login():
 
         # Load the user object (you may fetch the user from the database based on the username)
         user = User.query.filter_by(username=username).first()
-        print(f'Username: {username}\nPassword: {password}')
-        if user:
+
+        if not user:
+            # Set the error message for unsuccessful login
+            error_message = f'Invalid Name: 😭 {username} 😝.'
+            print(error_message)
+        elif user.password != password:
+            # Set the error message for unsuccessful login
+            error_message = f'Invalid Password: 😭 {password} 😝.'
+            print(error_message)
+            # If it's a GET request or the login is not successful, render the login page with the error message
+            return render_template('login.html', form=form, error_message=error_message,
+                                   date=current_time, year=current_year)
+        else:
+            print(f'Username: {username}\nPassword: {password}')
             # Login the user and create a session
             login_user(user)
             return redirect(url_for('home'))
-        else:
-            # Set the error message for unsuccessful login
-            error_message = f'Invalid 😭 {username} or {password} 😝.'
-            print(error_message)
 
     # If it's a GET request or the login is not successful, render the login page with the error message
     return render_template('login.html', form=form, error_message=error_message,

@@ -5,9 +5,29 @@ h1, h3 {
     font-family: 'Cardo'
 }
 
-h5, h6, .location {
+h5, h6, p, a, .location {
     color: #894218;
     text-align: center;
+}
+
+p.map {
+    #margin-bottom: 0.3rem;
+}
+
+.map a {
+    background-color: #FFE5B3;
+    color: purple;
+    padding: 0.3rem 0.5rem 0.3rem;
+    text-decoration: None;
+}
+
+.map a:hover {
+    background-color: #894218;
+    color: #6ABFA6;
+}
+
+.navbar {
+    background-color: #FFE5B3;
 }
 
 .navbar-brand {
@@ -24,6 +44,37 @@ a.nav-link {
     margin-left: 9rem;
 }
 
+button.navbar-toggler {
+    border: 0.1rem solid #894218;
+}
+
+span.navbar-toggler-icon {
+    #border: 0.1rem solid #894218;
+}
+
+label {
+    color: #894218;
+}
+
+.form-control {
+    border: 0.1rem solid #CC8700;
+    color: #894218;
+}
+
+.form-control:hover {
+    border: 0.1rem solid #894218;
+    color: #894218;
+}
+
+button.btn {
+    background-color: #894218;
+    border: #FFE5B3;
+}
+
+button.btn:hover {
+    background-color: #894218;
+}
+
 a {
     text-decoration: None;
 }
@@ -32,8 +83,9 @@ a.api  {
     color: magenta;
 }
 
-.api:hover {
-    color: green;
+a.api:hover {
+    color: #6ABFA6;
+    text-decoration: None;
 }
 
 h5.error-api-key {
@@ -76,9 +128,17 @@ h5.error-api-key {
 }
 
 .fa-inverse {
-    background-color: greenyellow;
-    border-radius: 91%;
-    color: purple;
+    background-color: #797CFF;
+    border-radius: 55%;
+    color: #AEFAFC;
+}
+
+.fa-inverse:hover {
+    width: 3.7rem;
+}
+
+.fas {
+    color: transparent !important;
 }
 
 .copyright {
