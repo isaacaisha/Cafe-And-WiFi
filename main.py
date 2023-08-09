@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-from sqlalchemy.orm import relationship
-from flask_login import UserMixin
+from flask_login import UserMixin, LoginManager, login_user, current_user, logout_user
 from flask_wtf.csrf import CSRFProtect
-from flask_login import LoginManager, login_user, current_user, logout_user
 from functools import wraps
 import random
 import json
@@ -15,12 +13,11 @@ from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b3'
-# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
+#app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b3'
 
-# CONNECT TO DB
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
+# Configure database for Heroku PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL').replace("://", "ql://", 1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
