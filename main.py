@@ -13,7 +13,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
-from flask_migrate import Migrate
+#from flask_migrate import Migrate
 from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
@@ -100,7 +100,7 @@ with app.app_context():
         else:
             raise
 
-    migrate = Migrate(app, db)
+    #migrate = Migrate(app, db)
 
     # Retrieve all cafés from the database
     cafes = Cafe.query.all()
@@ -203,9 +203,9 @@ def register():
         # Create a new User object
         new_user = User(username=username, password=password)
 
-        # Set the role to 'admin' for the first three registered users
-        if User.query.count() < 3:
-            new_user.role = 'admin'
+        ## Set the role to 'admin' for the first three registered users
+        #if User.query.count() < 3:
+        #    new_user.role = 'admin'
 
         # Add the new user to the database
         db.session.add(new_user)
