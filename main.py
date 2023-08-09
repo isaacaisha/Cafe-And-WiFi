@@ -14,6 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
 from flask_migrate import Migrate
+from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b1'
@@ -90,7 +91,14 @@ class Cafe(db.Model):
 
 with app.app_context():
     # Create all database tables
-    db.create_all()
+    try:
+        db.create_all()
+    except OperationalError as e:
+        # Handle the case where the table already exists
+        if "table users already exists" in str(e):
+            pass
+        else:
+            raise
 
     migrate = Migrate(app, db)
 
