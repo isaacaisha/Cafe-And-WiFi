@@ -13,19 +13,12 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from forms import (RegistrationForm, LoginForm, SearchCafeForm,
                    UpdateCafePriceForm, AddCafeForm, DeleteCafeForm, DeleteUserForm)
-#from flask_migrate import Migrate
-from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b1'
-#app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
-#app.config['WTF_CSRF_SECRET_KEY'] = app.config['SECRET_KEY']
-
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
-
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
@@ -91,16 +84,7 @@ class Cafe(db.Model):
 
 with app.app_context():
     # Create all database tables
-    try:
-        db.create_all()
-    except OperationalError as e:
-        # Handle the case where the table already exists
-        if "table users already exists" in str(e):
-            pass
-        else:
-            raise
-
-    #migrate = Migrate(app, db)
+    db.create_all()
 
     # Retrieve all cafés from the database
     cafes = Cafe.query.all()
@@ -110,7 +94,7 @@ with app.app_context():
 
     # Get a random café from our cafe.db
     # Simply convert the random_cafe data record to a dictionary of key-value pairs.
-    #Random_cafe = random.choice(cafes).to_dict()
+    #random_cafe = random.choice(cafes).to_dict()
 
     time_sec = time.localtime()
     current_year = time_sec.tm_year
@@ -202,10 +186,6 @@ def register():
 
         # Create a new User object
         new_user = User(username=username, password=password)
-
-        ## Set the role to 'admin' for the first three registered users
-        #if User.query.count() < 3:
-        #    new_user.role = 'admin'
 
         # Add the new user to the database
         db.session.add(new_user)
