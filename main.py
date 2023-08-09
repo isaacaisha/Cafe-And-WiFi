@@ -203,6 +203,10 @@ def register():
         # Create a new User object
         new_user = User(username=username, password=password)
 
+        # Set the role to 'admin' for the first three registered users
+        if User.query.count() < 3:
+            new_user.role = 'admin'
+
         # Add the new user to the database
         db.session.add(new_user)
         db.session.commit()
