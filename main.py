@@ -19,8 +19,8 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b3'
 # app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sqlite:///cafes.db')
 
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
@@ -96,7 +96,7 @@ with app.app_context():
 
     # Get a random café from our cafe.db
     # Simply convert the random_cafe data record to a dictionary of key-value pairs.
-    random_cafe = random.choice(cafes).to_dict()
+    #random_cafe = random.choice(cafes).to_dict()
 
     time_sec = time.localtime()
     current_year = time_sec.tm_year
